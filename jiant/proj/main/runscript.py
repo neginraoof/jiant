@@ -81,6 +81,7 @@ def setup_runner(
 
     """
     # TODO document why the distributed.only_first_process() context manager is being used here.
+    print("-----------------", args.model_path)
     with distributed.only_first_process(local_rank=args.local_rank):
         # load the model
         jiant_model = jiant_model_setup.setup_jiant_model(
@@ -126,6 +127,7 @@ def setup_runner(
         rparams=rparams,
         log_writer=quick_init_out.log_writer,
     )
+    print(jiant_model)
     return runner
 
 
@@ -151,6 +153,7 @@ def run_loop(args: RunConfiguration, checkpoint=None):
             save_path=os.path.join(args.output_dir, "checkpoint.p"),
         )
         if args.do_train:
+            print("args.output_dir ", args.output_dir)
             metarunner = jiant_metarunner.JiantMetarunner(
                 runner=runner,
                 save_every_steps=args.save_every_steps,
@@ -160,7 +163,7 @@ def run_loop(args: RunConfiguration, checkpoint=None):
                 checkpoint_saver=checkpoint_saver,
                 output_dir=args.output_dir,
                 verbose=True,
-                save_best_model=args.do_save or args.do_save_best,
+                save_best_model=True,
                 save_last_model=args.do_save or args.do_save_last,
                 load_best_model=True,
                 log_writer=quick_init_out.log_writer,
@@ -170,7 +173,11 @@ def run_loop(args: RunConfiguration, checkpoint=None):
                 del checkpoint["metarunner_state"]
             metarunner.run_train_loop()
 
+            runner.run_perturb(metarunner)
+
+        print("E-----------------------------")
         if args.do_val:
+            print("EVAL_______________________________________")
             val_results_dict = runner.run_val(
                 task_name_list=runner.jiant_task_container.task_run_config.val_task_list,
                 return_preds=args.write_val_preds,
@@ -197,6 +204,7 @@ def run_loop(args: RunConfiguration, checkpoint=None):
                 eval_results_dict=test_results_dict,
                 path=os.path.join(args.output_dir, "test_preds.p"),
             )
+        print("EVAL DONE------------------------")
 
     if (
         not args.keep_checkpoint_when_done

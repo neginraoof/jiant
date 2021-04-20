@@ -2,6 +2,7 @@ from typing import Dict
 from dataclasses import dataclass
 
 import torch
+import copy
 
 import jiant.tasks.evaluate as evaluate
 import jiant.utils.torch_utils as torch_utils
@@ -15,6 +16,7 @@ from jiant.shared.runner import (
 )
 from jiant.utils.display import maybe_tqdm
 from jiant.utils.python.datastructures import InfiniteYield, ExtendedDataClassMixin
+import jiant.proj.main.components.evaluate as jiant_evaluate
 
 
 @dataclass
@@ -37,6 +39,42 @@ class TrainState(ExtendedDataClassMixin):
     def step(self, task_name):
         self.task_steps[task_name] += 1
         self.global_steps += 1
+
+
+# TODO: Check the param names
+BERT_ENCODER_PARAMS = [
+    'attention.self.query.weight',
+    'attention.self.key.weight',
+    'attention.self.value.weight',
+    'attention.output.dense.weight',
+    'intermediate.dense.weight',
+    'output.dense.weight'
+]
+
+
+def perturb_bert_encoder(model, p=0.2):
+    with torch.no_grad():
+        model_params = dict(model.named_parameters())
+        for i, _ in enumerate(model.module.encoder.encoder.layer):
+            for param in BERT_ENCODER_PARAMS:
+                enc_layer = 'module.encoder.encoder.layer.{}.{}'.format(i, param)
+                w = model_params[enc_layer]
+                mask = torch.rand_like(w) < p
+                w.masked_fill_(mask, 0)
+
+        w = model_params['module.encoder.pooler.dense.weight']
+        mask = torch.rand_like(w) < p
+        w.masked_fill_(mask, 0)
+
+        w = model_params['module.taskmodels_dict.mrpc.classification_head.dense.weight']
+        mask = torch.rand_like(w) < p
+        w.masked_fill_(mask, 0)
+
+        w = model_params['module.taskmodels_dict.mrpc.classification_head.out_proj.weight']
+        mask = torch.rand_like(w) < p
+        w.masked_fill_(mask, 0)
+
+    return model
 
 
 class JiantRunner:
@@ -72,6 +110,10 @@ class JiantRunner:
             desc="Training",
             verbose=verbose,
         ):
+            # for name, param in self.model.named_parameters():
+            #     if param.requires_grad is True:
+            #         print(name, param.requires_grad)
+
             self.run_train_step(
                 train_dataloader_dict=train_dataloader_dict, train_state=train_state
             )
@@ -123,6 +165,28 @@ class JiantRunner:
                 "loss_val": loss_val / task_specific_config.gradient_accumulation_steps,
             },
         )
+
+    def run_perturb(self, metarunner):
+        import numpy
+        print('Evaluating perturbation model on test set...\n')
+        for p in torch.arange(0.05, 0.5, 0.05):
+            Acc = []
+            Loss = []
+            for i in range(10):
+                # Test
+                metarunner.done_training() 
+                self.jiant_model = perturb_bert_encoder(self.jiant_model, p)
+                val_results_dict = self.run_val(
+                    task_name_list=self.jiant_task_container.task_run_config.val_task_list,
+                    return_preds=False,
+                )
+                Acc.append(val_results_dict["mrpc"]["metrics"].minor["acc"])
+                Loss.append(val_results_dict["mrpc"]["loss"])
+            print('Pertubation p = %.5f: Test avg accuracy = %.5f +- %.5f, avg loss: %.5f' % (p,
+                                                                                              numpy.mean(Acc),
+                                                                                              numpy.std(Acc),
+                                                                                              numpy.mean(Loss)))
+        print("======= Done perturbation eval========")
 
     def run_val(self, task_name_list, use_subset=None, return_preds=False, verbose=True):
         evaluate_dict = {}
@@ -349,3 +413,4 @@ def run_test(
             task=task, accumulator=eval_accumulator,
         )
     return output
+

@@ -3,7 +3,7 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
-
+import os
 import torch
 import torch.nn as nn
 import transformers
@@ -56,6 +56,9 @@ def setup_jiant_model(
     model_arch = ModelArchitectures.from_model_type(model.base_model_prefix)
     transformers_class_spec = TRANSFORMERS_CLASS_SPEC_DICT[model_arch]
     tokenizer = transformers.AutoTokenizer.from_pretrained(hf_pretrained_model_name_or_path)
+    if (os.path.isdir(hf_pretrained_model_name_or_path)):
+        model_config_path = hf_pretrained_model_name_or_path + "/config.json"
+
     ancestor_model = get_ancestor_model(
         transformers_class_spec=transformers_class_spec, model_config_path=model_config_path,
     )
@@ -168,7 +171,7 @@ def load_encoder_from_transformers_weights(
         if k.startswith(encoder_prefix):
             load_weights_dict[strings.remove_prefix(k, encoder_prefix)] = v
         else:
-            remainder_weights_dict[k] = v
+            load_weights_dict[k] = v
     encoder.load_state_dict(load_weights_dict)
     if return_remainder:
         return remainder_weights_dict
