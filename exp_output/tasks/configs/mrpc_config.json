@@ -1,0 +1,9 @@
+{
+  "task": "mrpc",
+  "paths": {
+    "train": "/scratch/08134/negin/BilingualBert/src/jiant/exp_output/tasks/data/mrpc/train.jsonl",
+    "test": "/scratch/08134/negin/BilingualBert/src/jiant/exp_output/tasks/data/mrpc/test.jsonl",
+    "val": "/scratch/08134/negin/BilingualBert/src/jiant/exp_output/tasks/data/mrpc/val.jsonl"
+  },
+  "name": "mrpc"
+}

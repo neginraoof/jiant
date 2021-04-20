@@ -1,0 +1,5 @@
+{
+  "hf_pretrained_model_name_or_path": "giga-bert",
+  "model_path": "exp_output/models/gigabert/model/pytorch_model.bin",
+  "model_config_path": "exp_output/models/gigabert/model/config.json"
+}
