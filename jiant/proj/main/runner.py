@@ -187,8 +187,8 @@ class JiantRunner:
             print('Pertubation p = %.5f: Test avg accuracy = %.5f +- %.5f, major = %.5f +- %.5f,  avg loss: %.5f' % (p,
                                                                                               numpy.mean(Acc),
                                                                                               numpy.std(Acc),
-                                                                                              numpy.mean(F_Acc),
-                                                                                              numpy.std(F_Acc),
+                                                                                              numpy.mean(F_ACC),
+                                                                                              numpy.std(F_ACC),
                                                                                               numpy.mean(Loss)))
         metarunner.done_training()
         print("======= Done perturbation eval========")
