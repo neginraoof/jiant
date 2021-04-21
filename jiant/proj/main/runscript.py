@@ -81,7 +81,6 @@ def setup_runner(
 
     """
     # TODO document why the distributed.only_first_process() context manager is being used here.
-    print("-----------------", args.model_path)
     with distributed.only_first_process(local_rank=args.local_rank):
         # load the model
         jiant_model = jiant_model_setup.setup_jiant_model(
@@ -112,6 +111,7 @@ def setup_runner(
         n_gpu=quick_init_out.n_gpu,
         local_rank=args.local_rank,
     )
+    print("-----------------", jiant_model)
     optimizer_scheduler.optimizer = optimizer
     rparams = jiant_runner.RunnerParameters(
         local_rank=args.local_rank,
@@ -130,7 +130,7 @@ def setup_runner(
     return runner
 
 
-def run_loop(args: RunConfiguration, checkpoint=None):
+def run_loop(args: RunConfiguration, checkpoint=None, tasks=None):
     is_resumed = checkpoint is not None
     quick_init_out = initialization.quick_init(args=args, verbose=True)
     print(quick_init_out.n_gpu)
@@ -171,7 +171,6 @@ def run_loop(args: RunConfiguration, checkpoint=None):
                 )
 
         if args.do_train:
-            print("args.output_dir ", args.output_dir)
             metarunner = jiant_metarunner.JiantMetarunner(
                 runner=runner,
                 save_every_steps=args.save_every_steps,
@@ -191,10 +190,9 @@ def run_loop(args: RunConfiguration, checkpoint=None):
                 del checkpoint["metarunner_state"]
             
             metarunner.run_train_loop()
-            runner.run_perturb(metarunner)
+            runner.run_perturb(tasks, metarunner)
 
         if args.do_val:
-            print("EVAL_______________________________________")
             val_results_dict = runner.run_val(
                 task_name_list=runner.jiant_task_container.task_run_config.val_task_list,
                 return_preds=args.write_val_preds,

@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 import torch
 import copy
+import numpy
 
 import jiant.tasks.evaluate as evaluate
 import jiant.utils.torch_utils as torch_utils
@@ -52,9 +53,10 @@ BERT_ENCODER_PARAMS = [
 ]
 
 
-def perturb_bert_encoder(model, p=0.2):
+def perturb_bert_encoder(model, task, p=0.2):
     with torch.no_grad():
         model_params = dict(model.named_parameters())
+
         for i, _ in enumerate(model.module.encoder.encoder.layer):
             for param in BERT_ENCODER_PARAMS:
                 enc_layer = 'module.encoder.encoder.layer.{}.{}'.format(i, param)
@@ -66,14 +68,26 @@ def perturb_bert_encoder(model, p=0.2):
         mask = torch.rand_like(w) < p
         w.masked_fill_(mask, 0)
 
-        w = model_params['module.taskmodels_dict.mrpc.classification_head.dense.weight']
+        w = model_params['module.taskmodels_dict.'+task+'.classification_head.dense.weight']
         mask = torch.rand_like(w) < p
         w.masked_fill_(mask, 0)
 
-        w = model_params['module.taskmodels_dict.mrpc.classification_head.out_proj.weight']
+        w = model_params['module.taskmodels_dict.'+task+'.classification_head.out_proj.weight']
         mask = torch.rand_like(w) < p
         w.masked_fill_(mask, 0)
 
+    return model
+
+
+def freeze(model):
+    for i, layer in enumerate(model.encoder.encoder.layer):
+        for param in layer.parameters():
+            print(param)
+            param.requires_grad = False
+
+    #w = model_params['module.encoder.pooler.dense.weight']
+    #mask = torch.rand_like(w) < p
+    #w.masked_fill_(mask, 0)
     return model
 
 
@@ -105,6 +119,10 @@ class JiantRunner:
         train_state = TrainState.from_task_name_list(
             self.jiant_task_container.task_run_config.train_task_list
         )
+
+        self.jiant_model = freeze(self.jiant_model)
+        self.model = self.jiant_model
+
         for _ in maybe_tqdm(
             range(self.jiant_task_container.global_train_config.max_steps),
             desc="Training",
@@ -122,6 +140,9 @@ class JiantRunner:
     def resume_train_context(self, train_state, verbose=True):
         train_dataloader_dict = self.get_train_dataloader_dict()
         start_position = train_state.global_steps
+        
+        self.jiant_model = freeze(self.jiant_model)
+
         for _ in maybe_tqdm(
             range(start_position, self.jiant_task_container.global_train_config.max_steps),
             desc="Training",
@@ -166,25 +187,24 @@ class JiantRunner:
             },
         )
 
-    def run_perturb(self, metarunner):
-        import numpy
+    def run_perturb(self, task, metarunner):
         print('Evaluating perturbation model on test set...\n')
         for p in torch.arange(0.00, 0.5, 0.05):
             Acc = []
             Loss = []
             F_ACC = []
-            for i in range(100):
+            for i in range(20):
                 # Test
                 metarunner.done_training() 
-                self.jiant_model = perturb_bert_encoder(self.jiant_model, p)
+                self.jiant_model = perturb_bert_encoder(self.jiant_model, task, p)
                 val_results_dict = self.run_val(
                     task_name_list=self.jiant_task_container.task_run_config.val_task_list,
                     return_preds=False,
                 )
-                Acc.append(val_results_dict["mrpc"]["metrics"].minor["acc"])
-                Loss.append(val_results_dict["mrpc"]["loss"])
-                F_ACC.append(val_results_dict["mrpc"]["metrics"].major)
-            print('Pertubation p = %.5f: Test avg accuracy = %.5f +- %.5f, major = %.5f +- %.5f,  avg loss: %.5f' % (p,
+                Acc.append(val_results_dict[task]["metrics"].minor["acc"])
+                Loss.append(val_results_dict[task]["loss"])
+                F_ACC.append(val_results_dict[task]["metrics"].major)
+            print('Perturbation p = %.5f: Test avg accuracy = %.5f +- %.5f, f1_acc = %.5f +- %.5f,  avg loss: %.5f' % (p,
                                                                                               numpy.mean(Acc),
                                                                                               numpy.std(Acc),
                                                                                               numpy.mean(F_ACC),
