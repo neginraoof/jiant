@@ -127,7 +127,6 @@ def setup_runner(
         rparams=rparams,
         log_writer=quick_init_out.log_writer,
     )
-    print(jiant_model)
     return runner
 
 
@@ -152,6 +151,25 @@ def run_loop(args: RunConfiguration, checkpoint=None):
             metadata={"args": args.to_dict()},
             save_path=os.path.join(args.output_dir, "checkpoint.p"),
         )
+
+        if args.do_val:
+            print("EVAL_BEFORE________________________________")
+            val_results_dict = runner.run_val(
+                task_name_list=runner.jiant_task_container.task_run_config.val_task_list,
+                return_preds=args.write_val_preds,
+            )
+            jiant_evaluate.write_val_results(
+                val_results_dict=val_results_dict,
+                metrics_aggregator=runner.jiant_task_container.metrics_aggregator,
+                output_dir=args.output_dir,
+                verbose=True,
+            )
+            if args.write_val_preds:
+                jiant_evaluate.write_preds(
+                    eval_results_dict=val_results_dict,
+                    path=os.path.join(args.output_dir, "val_preds.p"),
+                )
+
         if args.do_train:
             print("args.output_dir ", args.output_dir)
             metarunner = jiant_metarunner.JiantMetarunner(
@@ -171,11 +189,10 @@ def run_loop(args: RunConfiguration, checkpoint=None):
             if is_resumed:
                 metarunner.load_state(checkpoint["metarunner_state"])
                 del checkpoint["metarunner_state"]
+            
             metarunner.run_train_loop()
-
             runner.run_perturb(metarunner)
 
-        print("E-----------------------------")
         if args.do_val:
             print("EVAL_______________________________________")
             val_results_dict = runner.run_val(

@@ -169,10 +169,11 @@ class JiantRunner:
     def run_perturb(self, metarunner):
         import numpy
         print('Evaluating perturbation model on test set...\n')
-        for p in torch.arange(0.05, 0.5, 0.05):
+        for p in torch.arange(0.00, 0.5, 0.05):
             Acc = []
             Loss = []
-            for i in range(10):
+            F_ACC = []
+            for i in range(100):
                 # Test
                 metarunner.done_training() 
                 self.jiant_model = perturb_bert_encoder(self.jiant_model, p)
@@ -182,10 +183,14 @@ class JiantRunner:
                 )
                 Acc.append(val_results_dict["mrpc"]["metrics"].minor["acc"])
                 Loss.append(val_results_dict["mrpc"]["loss"])
-            print('Pertubation p = %.5f: Test avg accuracy = %.5f +- %.5f, avg loss: %.5f' % (p,
+                F_ACC.append(val_results_dict["mrpc"]["metrics"].major)
+            print('Pertubation p = %.5f: Test avg accuracy = %.5f +- %.5f, major = %.5f +- %.5f,  avg loss: %.5f' % (p,
                                                                                               numpy.mean(Acc),
                                                                                               numpy.std(Acc),
+                                                                                              numpy.mean(F_Acc),
+                                                                                              numpy.std(F_Acc),
                                                                                               numpy.mean(Loss)))
+        metarunner.done_training()
         print("======= Done perturbation eval========")
 
     def run_val(self, task_name_list, use_subset=None, return_preds=False, verbose=True):
