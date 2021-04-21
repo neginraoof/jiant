@@ -143,7 +143,7 @@ def run_simple(args: RunConfiguration, with_continue: bool = False):
             phases_to_do = []
             for phase, phase_task_list in phase_task_dict.items():
                 if task_name in phase_task_list and not os.path.exists(
-                    os.path.join(args.exp_dir, "cache", hf_config.model_type, task_name, phase)
+                    os.path.join(args.exp_dir, "cache", hf_config.model_name, task_name, phase)
                 ):
                     config = read_json(task_config_path_dict[task_name])
                     if phase in config["paths"]:
