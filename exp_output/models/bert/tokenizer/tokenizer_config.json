@@ -1,1 +1,1 @@
-{"do_lower_case": false, "model_max_length": 1000000000000000019884624838656, "vocab_size": 50000, "is_fast": false, "padding_side": "right", "special_tokens_map_file": "exp_output/models/gigabert/model/special_tokens_map.json", "full_tokenizer_file": null}
+{"do_lower_case": false, "model_max_length": 512}
