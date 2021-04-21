@@ -25,7 +25,9 @@
   "bad_words_ids": null,
   "num_return_sequences": 1,
   "chunk_size_feed_forward": 0,
-  "architectures": null,
+  "architectures": [
+    "BertForMaskedLM"
+  ],
   "finetuning_task": null,
   "id2label": {
     "0": "LABEL_0",
@@ -42,13 +44,8 @@
   "decoder_start_token_id": null,
   "task_specific_params": null,
   "xla_device": null,
-  "directionality": "bidi",
-  "pooler_fc_size": 768,
-  "pooler_num_attention_heads": 12,
-  "pooler_num_fc_layers": 3,
-  "pooler_size_per_head": 128,
-  "pooler_type": "first_token_transform",
-  "vocab_size": 50000,
+  "model_type": "bert",
+  "vocab_size": 28996,
   "hidden_size": 768,
   "num_hidden_layers": 12,
   "num_attention_heads": 12,
@@ -60,6 +57,5 @@
   "type_vocab_size": 2,
   "initializer_range": 0.02,
   "layer_norm_eps": 1e-12,
-  "gradient_checkpointing": false,
-  "model_type": "bert"
+  "gradient_checkpointing": false
 }
