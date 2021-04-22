@@ -9,6 +9,8 @@ Perturbation p = 0.35000: Test avg accuracy = 0.63297 +- 0.11873, f1_acc = 0.670
 Perturbation p = 0.40000: Test avg accuracy = 0.61385 +- 0.13820, f1_acc = 0.63931 +- 0.21959,  avg loss: 0.68610
 Perturbation p = 0.45000: Test avg accuracy = 0.64228 +- 0.11443, f1_acc = 0.68277 +- 0.18215,  avg loss: 0.68517
 
+Average over 100 runs.
+
 {
   "aggregated": 0.7691581219643822,
   "mrpc": {
@@ -36,7 +38,7 @@ Perturbation p = 0.35000: Test avg accuracy = 0.48235 +- 0.17298, f1_acc = 0.433
 Perturbation p = 0.40000: Test avg accuracy = 0.57377 +- 0.16864, f1_acc = 0.57106 +- 0.27035,  avg loss: 0.68847
 Perturbation p = 0.45000: Test avg accuracy = 0.61029 +- 0.14706, f1_acc = 0.63004 +- 0.23597,  avg loss: 0.68403
 
-======= Done perturbation eval========                                                                                                                                                                          /scratch/08134/negin/conda_local/envs/myenv/lib/python3.7/site-packages/torch/nn/parallel/_functions.py:61: UserWarning: Was asked to gather along dimension 0, but all input tensors were scalars; will instead unsqueeze and return a vector.
+Average over 10 runs.                                                                                                                                                                         /scratch/08134/negin/conda_local/envs/myenv/lib/python3.7/site-packages/torch/nn/parallel/_functions.py:61: UserWarning: Was asked to gather along dimension 0, but all input tensors were scalars; will instead unsqueeze and return a vector.
 
 {val (mrpc, Val):
   "aggregated": 0.7607843137254902,
