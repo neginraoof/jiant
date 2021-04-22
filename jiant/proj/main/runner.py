@@ -82,12 +82,10 @@ def perturb_bert_encoder(model, task, p=0.2):
 def freeze(model):
     for i, layer in enumerate(model.encoder.encoder.layer):
         for param in layer.parameters():
-            print(param)
             param.requires_grad = False
 
-    #w = model_params['module.encoder.pooler.dense.weight']
-    #mask = torch.rand_like(w) < p
-    #w.masked_fill_(mask, 0)
+    param = model.encoder.pooler.dense.weight
+    param.requires_grad = False
     return model
 
 
@@ -193,7 +191,7 @@ class JiantRunner:
             Acc = []
             Loss = []
             F_ACC = []
-            for i in range(20):
+            for i in range(10):
                 # Test
                 metarunner.done_training() 
                 self.jiant_model = perturb_bert_encoder(self.jiant_model, task, p)
