@@ -9,7 +9,8 @@ Perturbation p = 0.35000: Test avg accuracy = 0.63297 +- 0.11873, f1_acc = 0.670
 Perturbation p = 0.40000: Test avg accuracy = 0.61385 +- 0.13820, f1_acc = 0.63931 +- 0.21959,  avg loss: 0.68610
 Perturbation p = 0.45000: Test avg accuracy = 0.64228 +- 0.11443, f1_acc = 0.68277 +- 0.18215,  avg loss: 0.68517
 
-EVAL_______________________________________
+Average over 100 runs.
+
 {
   "aggregated": 0.7691581219643822,
   "mrpc": {
@@ -24,6 +25,37 @@ EVAL_______________________________________
     }
   }
 }
+
+=================================================================================================================
+Experiment with finetune last layer only:
+
+Perturbation p = 0.00000: Test avg accuracy = 0.70098 +- 0.00000, f1_acc = 0.75488 +- 0.00000,  avg loss: 0.58616
+Perturbation p = 0.05000: Test avg accuracy = 0.69632 +- 0.00278, f1_acc = 0.75470 +- 0.00336,  avg loss: 0.59923
+Perturbation p = 0.10000: Test avg accuracy = 0.69412 +- 0.00588, f1_acc = 0.75230 +- 0.00476,  avg loss: 0.62326
+Perturbation p = 0.15000: Test avg accuracy = 0.66838 +- 0.07390, f1_acc = 0.71635 +- 0.09706,  avg loss: 0.66261
+Perturbation p = 0.20000: Test avg accuracy = 0.56225 +- 0.16318, f1_acc = 0.55700 +- 0.25613,  avg loss: 0.68792
+Perturbation p = 0.25000: Test avg accuracy = 0.61029 +- 0.14706, f1_acc = 0.63004 +- 0.23597,  avg loss: 0.68526
+Perturbation p = 0.30000: Test avg accuracy = 0.57304 +- 0.16816, f1_acc = 0.57010 +- 0.26974,  avg loss: 0.68795
+Perturbation p = 0.35000: Test avg accuracy = 0.60564 +- 0.14524, f1_acc = 0.62461 +- 0.23366,  avg loss: 0.68926
+Perturbation p = 0.40000: Test avg accuracy = 0.67034 +- 0.04044, f1_acc = 0.73305 +- 0.04493,  avg loss: 0.68529
+Perturbation p = 0.45000: Test avg accuracy = 0.53676 +- 0.18011, f1_acc = 0.51205 +- 0.28901,  avg loss: 0.69028
+======= Done perturbation eval========
+{
+  "aggregated": 0.7643427741466957,
+  "mrpc": {
+    "loss": 0.6884263937289898,
+    "metrics": {
+      "major": 0.7643427741466957,
+      "minor": {
+        "acc": 0.7107843137254902,
+        "f1": 0.8179012345679013,
+        "acc_and_f1": 0.7643427741466957
+      }
+    }
+  }
+}
+
+=================================================================================================================
 
 (taskmodels_dict): ModuleDict(
   (mrpc): ClassificationModel(
