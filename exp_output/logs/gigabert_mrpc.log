@@ -39,7 +39,7 @@ Perturbation p = 0.35000: Test avg accuracy = 0.53848 +- 0.17618, f1_acc = 0.517
 Perturbation p = 0.40000: Test avg accuracy = 0.50025 +- 0.18358, f1_acc = 0.45354 +- 0.29449,  avg loss: 0.69591
 Perturbation p = 0.45000: Test avg accuracy = 0.46324 +- 0.18011, f1_acc = 0.39406 +- 0.28901,  avg loss: 0.70143
 
-{val (mrpc, Val):
+{
   "aggregated": 0.7602535096878988,
   "mrpc": {
     "loss": 0.6875522411786593,
