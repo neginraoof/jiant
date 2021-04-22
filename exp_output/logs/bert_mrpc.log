@@ -9,7 +9,6 @@ Perturbation p = 0.35000: Test avg accuracy = 0.63297 +- 0.11873, f1_acc = 0.670
 Perturbation p = 0.40000: Test avg accuracy = 0.61385 +- 0.13820, f1_acc = 0.63931 +- 0.21959,  avg loss: 0.68610
 Perturbation p = 0.45000: Test avg accuracy = 0.64228 +- 0.11443, f1_acc = 0.68277 +- 0.18215,  avg loss: 0.68517
 
-EVAL_______________________________________
 {
   "aggregated": 0.7691581219643822,
   "mrpc": {
@@ -24,6 +23,37 @@ EVAL_______________________________________
     }
   }
 }
+
+=================================================================================================================
+Experiment with finetune last layer only:
+Perturbation p = 0.00000: Test avg accuracy = 0.69118 +- 0.00000, f1_acc = 0.74298 +- 0.00000,  avg loss: 0.59491
+Perturbation p = 0.05000: Test avg accuracy = 0.67745 +- 0.06045, f1_acc = 0.72417 +- 0.07888,  avg loss: 0.62488
+Perturbation p = 0.15000: Test avg accuracy = 0.60907 +- 0.14727, f1_acc = 0.62291 +- 0.23312,  avg loss: 0.67597
+Perturbation p = 0.20000: Test avg accuracy = 0.59608 +- 0.14799, f1_acc = 0.61069 +- 0.23455,  avg loss: 0.68560
+Perturbation p = 0.25000: Test avg accuracy = 0.57108 +- 0.16753, f1_acc = 0.56913 +- 0.26721,  avg loss: 0.68936
+Perturbation p = 0.30000: Test avg accuracy = 0.64681 +- 0.10941, f1_acc = 0.68909 +- 0.17541,  avg loss: 0.68498
+Perturbation p = 0.35000: Test avg accuracy = 0.48235 +- 0.17298, f1_acc = 0.43358 +- 0.27916,  avg loss: 0.69187
+Perturbation p = 0.40000: Test avg accuracy = 0.57377 +- 0.16864, f1_acc = 0.57106 +- 0.27035,  avg loss: 0.68847
+Perturbation p = 0.45000: Test avg accuracy = 0.61029 +- 0.14706, f1_acc = 0.63004 +- 0.23597,  avg loss: 0.68403
+
+======= Done perturbation eval========                                                                                                                                                                          /scratch/08134/negin/conda_local/envs/myenv/lib/python3.7/site-packages/torch/nn/parallel/_functions.py:61: UserWarning: Was asked to gather along dimension 0, but all input tensors were scalars; will instead unsqueeze and return a vector.
+
+{val (mrpc, Val):
+  "aggregated": 0.7607843137254902,
+  "mrpc": {
+    "loss": 0.6826645869475144,
+    "metrics": {
+      "major": 0.7607843137254902,
+      "minor": {
+        "acc": 0.7009803921568627,
+        "f1": 0.8205882352941176,
+        "acc_and_f1": 0.7607843137254902
+      }
+    }
+  }
+}
+
+=================================================================================================================
 
 (taskmodels_dict): ModuleDict(
   (mrpc): ClassificationModel(
