@@ -1,0 +1,27 @@
+Evaluating perturbation model on test set...
+
+Perturbation p = 0.00000: Test avg accuracy = 0.72857 +- 0.00000, f1_acc = 0.66070 +- 0.00000,  avg loss: 0.54099
+Perturbation p = 0.05000: Test avg accuracy = 0.71140 +- 0.01690, f1_acc = 0.60406 +- 0.06176,  avg loss: 0.57196
+Perturbation p = 0.10000: Test avg accuracy = 0.68975 +- 0.02418, f1_acc = 0.57516 +- 0.10057,  avg loss: 0.60616
+Perturbation p = 0.15000: Test avg accuracy = 0.66423 +- 0.04614, f1_acc = 0.57704 +- 0.08594,  avg loss: 0.63458
+Perturbation p = 0.20000: Test avg accuracy = 0.67139 +- 0.02978, f1_acc = 0.49542 +- 0.12289,  avg loss: 0.63954
+Perturbation p = 0.25000: Test avg accuracy = 0.63082 +- 0.09192, f1_acc = 0.42406 +- 0.11376,  avg loss: 0.65693
+Perturbation p = 0.30000: Test avg accuracy = 0.63019 +- 0.05924, f1_acc = 0.44652 +- 0.11287,  avg loss: 0.66403
+Perturbation p = 0.35000: Test avg accuracy = 0.58500 +- 0.10835, f1_acc = 0.38658 +- 0.09399,  avg loss: 0.67242
+Perturbation p = 0.40000: Test avg accuracy = 0.61077 +- 0.08118, f1_acc = 0.34723 +- 0.04257,  avg loss: 0.67516
+Perturbation p = 0.45000: Test avg accuracy = 0.57695 +- 0.10455, f1_acc = 0.37756 +- 0.08916,  avg loss: 0.68007
+======= Done perturbation eval========
+{
+  "aggregated": 0.6633355232243587,
+  "qqp": {
+    "loss": 0.5504683907131983,
+    "metrics": {
+      "major": 0.6633355232243587,
+      "minor": {
+        "acc": 0.7252287905021024,
+        "f1": 0.6014422559466152,
+        "acc_and_f1": 0.6633355232243587
+      }
+    }
+  }
+}
